@@ -14,3 +14,15 @@
         </li>
       </ul>
     </nav>
+    <div class="search">
+      <form action="{% url "agenda:search" %}" method="GET"> 
+        <input 
+        type="search" 
+        class="search-input" 
+        placeholder="Search" 
+        id="search" 
+        name="q"
+        value = "{{ search_value }}"> 
+      </form>
+</header>
+    </div>
