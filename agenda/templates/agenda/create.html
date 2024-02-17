@@ -16,9 +16,11 @@
         {% for field in form %}
         <div class="form-group">
           <label for="{{field.id_for_label}}">{{field.label}}</label>
-          {{field}}
-          {{  field.errors }}
-          {{field.help_text}}
+            {{field}}
+            {{field.errors}}
+          {% if field.help_text %}
+            <p class="help-text">{{field.help_text}}</p>
+          {% endif %}
         </div>
         {% endfor %}
       </div>
