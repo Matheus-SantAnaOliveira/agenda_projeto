@@ -2,6 +2,13 @@ from agenda.models import Contact
 from django.core.exceptions import ValidationError
 from django import forms
 class ContactForm(forms.ModelForm):
+    picture = forms.ImageField(
+        widget=forms.FileInput(
+            attrs={
+                'accept':'image/*',
+            }
+        )
+    )
     first_name = forms.CharField(
         widget= forms.TextInput(
             attrs={
@@ -24,11 +31,7 @@ class ContactForm(forms.ModelForm):
     class Meta:
         model = Contact
         fields = ('first_name','last_name', 'phone',
-                  'email', 'description','category',)
-        # widgets = {
-        #     'first_name':forms.TextInput(
-        #         attrs={'class':'classe-a',
-        #                'placeholder':'Digite seu nome'}),}    
+                  'email', 'description','category','picture',)
        
     def clean(self):
         cleaned_data = self.cleaned_data

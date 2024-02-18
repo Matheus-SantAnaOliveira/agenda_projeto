@@ -6,7 +6,7 @@
     <h2>Contact</h2>
 
     <form 
-      action="{% url "agenda:create" %}"
+      action="{{form_action}}"
       method="POST"
       enctype="multipart/form-data"
       >
@@ -20,6 +20,9 @@
             {{field.errors}}
           {% if field.help_text %}
             <p class="help-text">{{field.help_text}}</p>
+          {% endif %}
+          {% if field.name == 'picture' and field.value.url%}
+            <img src="{{field.value.url}}" alt="">
           {% endif %}
         </div>
         {% endfor %}
