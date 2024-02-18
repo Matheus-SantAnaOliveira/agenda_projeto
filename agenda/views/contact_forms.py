@@ -11,18 +11,62 @@ from django.core.exceptions import ValidationError
 from agenda.forms import ContactForm
 
 def create(request):
+    form_action = reverse("agenda:create")
     if request.method == 'POST':
         form = ContactForm(data=request.POST)
         context = {
-            'form': form
+            'form': form,
+            'form_action':form_action
         }
         if form.is_valid():
-            form.save()
-            return redirect('agenda:create')
+            contact = form.save()
+            return redirect('agenda:update', contact_id=contact.pk )
         
         return render(request, 'agenda/create.html', context= context)
+    
+    form = ContactForm() 
     context = {
-            'form': ContactForm()
+            'form': form,
+            'form_action':form_action
+        }
+    return render(request, 'agenda/create.html', context= context)
+
+def update(request, contact_id):
+    contact = get_object_or_404(
+        Contact, pk = contact_id, show = True
+        )
+    form_action = reverse("agenda:update", args=(contact_id,))
+    
+    if request.method == 'POST':
+        form = ContactForm(data=request.POST, instance = contact)
+        
+        context = {
+            'form': form,
+            'form_action':form_action
+        }
+        if form.is_valid():
+            contact = form.save()
+            return redirect('agenda:update', contact_id=contact.pk )
+        
+        return render(request, 'agenda/create.html', context= context)
+    
+    form = ContactForm(instance = contact) 
+    context = {
+            'form': form,
+            'form_action':form_action
         }
     return render(request, 'agenda/create.html', context= context)
     
+
+def delete(request, contact_id):
+    contact = get_object_or_404(
+        Contact, pk = contact_id, show = True
+        )
+    confirmation = request.POST.get('confirmation', 'no')
+    if confirmation =='yes':
+        contact.delete()
+        return redirect("agenda:index")
+    return render(request, 
+                  'agenda/contact.html',
+                  {'contact':contact,
+                   'confirmation' : confirmation})
