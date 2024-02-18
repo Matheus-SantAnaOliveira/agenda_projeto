@@ -8,7 +8,7 @@ class ContactForm(forms.ModelForm):
                 'class':'classe-a',
                 'placeholder':'DIgite seu nome'
                 }
-            ), help_text='texto de ajuda'
+            ), help_text='Insira seu primeiro nome'
         )
     
     last_name = forms.CharField(
@@ -23,7 +23,8 @@ class ContactForm(forms.ModelForm):
         
     class Meta:
         model = Contact
-        fields = ('first_name','last_name', 'phone',)
+        fields = ('first_name','last_name', 'phone',
+                  'email', 'description','category',)
         # widgets = {
         #     'first_name':forms.TextInput(
         #         attrs={'class':'classe-a',
@@ -53,12 +54,10 @@ class ContactForm(forms.ModelForm):
         return data
     
     def clean_last_name(self):
-        aaa = self.cleaned_data.get("last_name")
-        for i in self.cleaned_data:
-            print(i)
+        cleaned_data = self.cleaned_data.get("last_name")
             
-        if aaa == 'DEF':
+        if cleaned_data == 'DEF':
             self.add_error('last_name',
                             ValidationError('Não digite DEF neste campo', 
                                             code='invalid'))
-        return aaa
+        return cleaned_data
