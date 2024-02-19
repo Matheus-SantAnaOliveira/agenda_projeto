@@ -9,10 +9,17 @@
         <li class="menu-item">
           <a href="{% url "agenda:create" %}" class="menu-link">Create</a>
         </li>
-        <li class="menu-item">
-          <a href="{% url "agenda:register" %}" class="menu-link">Register</a>
-        </li>
-      </ul>
+        {% if user.is_authenticated %}
+          <li class="menu-item">
+              <a href="{% url "agenda:logout" %}" class="menu-link">logout</a>
+            </li>
+          </ul>
+        {% else %}
+          <li class="menu-item">
+            <a href="{% url "agenda:login" %}" class="menu-link">Login</a>
+          </li>
+        </ul>
+        {% endif %}
     </nav>
     <div class="search">
       <form action="{% url "agenda:search" %}" method="GET"> 

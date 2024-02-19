@@ -1,0 +1,14 @@
+{% extends 'global/base.html' %}
+
+{% block content %}
+  <div class="form-wrapper">
+      <h2>Register</h2>
+    {% if user.is_authenticated %}
+    <p> você fez login como {{user.username}}.
+        Clique <a href="{% url "agenda:logout" %}">aqui</a> para sair
+    {% else %}    
+        {% csrf_token %}  
+        {% include "agenda/partials/user-form.html" %}
+    {% endif %}
+  </div>
+{% endblock content %}
