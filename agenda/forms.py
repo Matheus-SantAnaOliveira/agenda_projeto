@@ -9,9 +9,8 @@ class ContactForm(forms.ModelForm):
         widget=forms.FileInput(
             attrs={
                 'accept':'image/*',
-            }
-        )
-    )
+            }),
+        required= False    )
     first_name = forms.CharField(
         widget= forms.TextInput(
             attrs={

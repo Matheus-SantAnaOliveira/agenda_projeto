@@ -2,11 +2,14 @@ from django.shortcuts import render, redirect
 from django.contrib import messages, auth
 from agenda.forms import RegisterForm, RegisterUpdateForm
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
 def register(request):
     form = RegisterForm(request.POST)
 
     if form.is_valid():
-        form.save()
+        contact = form.save(commit=False)
+        contact.owner = request.user
+        contact.save()
         messages.success(request, 'Usuário registrado')
         return redirect('agenda:login')
     
@@ -38,13 +41,14 @@ def login_view(request):
             'form': form
         }
     )
-
+    
+@login_required(login_url='agenda:login')
 def logout_view(request):
     auth.logout(request)
     messages.success(request, "Usúario saiu")
     return redirect('agenda:login')
 
-
+@login_required(login_url='agenda:login')
 def user_update(request):
     form = RegisterUpdateForm(instance=request.user)
     if request.method != 'POST':

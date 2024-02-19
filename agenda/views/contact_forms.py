@@ -1,16 +1,11 @@
-from typing import Any
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
-from django.db.models import Q
 from agenda.models import Contact
-from django.core.paginator import Paginator
-from django import forms
-from django.core.exceptions import ValidationError
 from django.contrib import messages
-
-# Create your views here.
+from django.contrib.auth.decorators import login_required
 from agenda.forms import ContactForm
 
+@login_required(login_url='agenda:login')
 def create(request):
     form_action = reverse("agenda:create")
     if request.method == 'POST':
@@ -33,12 +28,13 @@ def create(request):
         } 
     return render(request, 'agenda/create.html', context= context)
 
+@login_required(login_url='agenda:login')
 def update(request, contact_id):
     contact = get_object_or_404(
-        Contact, pk = contact_id, show = True
+        Contact, pk = contact_id, show = True, owner = request.user
         )
     form_action = reverse("agenda:update", args=(contact_id,))
-    
+     
     if request.method == 'POST':
         form = ContactForm(request.POST, request.FILES, instance = contact)
         
@@ -61,10 +57,10 @@ def update(request, contact_id):
         }
     return render(request, 'agenda/create.html', context= context)
     
-
+@login_required(login_url='agenda:login')
 def delete(request, contact_id):
     contact = get_object_or_404(
-        Contact, pk = contact_id, show = True
+        Contact, pk = contact_id, show = True, owner = request.user
         )
     confirmation = request.POST.get('confirmation', 'no')
     if confirmation =='yes':
