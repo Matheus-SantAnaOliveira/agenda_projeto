@@ -6,6 +6,7 @@ from agenda.models import Contact
 from django.core.paginator import Paginator
 from django import forms
 from django.core.exceptions import ValidationError
+from django.contrib import messages
 
 # Create your views here.
 from agenda.forms import ContactForm
@@ -20,6 +21,7 @@ def create(request):
         }
         if form.is_valid():
             contact = form.save()
+            messages.success('Usúario criado com sucesso')
             return redirect('agenda:update', contact_id=contact.pk )
         
         return render(request, 'agenda/create.html', context= context)
@@ -28,7 +30,7 @@ def create(request):
     context = {
             'form': form,
             'form_action':form_action
-        }
+        } 
     return render(request, 'agenda/create.html', context= context)
 
 def update(request, contact_id):
@@ -46,8 +48,10 @@ def update(request, contact_id):
         }
         if form.is_valid():
             contact = form.save()
+            messages.success('Usúario editado com sucesso')
             return redirect('agenda:update', contact_id = contact.pk )
         
+        messages.warning('algo deu errado')
         return render(request, 'agenda/create.html', context= context)
     
     form = ContactForm(instance = contact) 
@@ -65,7 +69,9 @@ def delete(request, contact_id):
     confirmation = request.POST.get('confirmation', 'no')
     if confirmation =='yes':
         contact.delete()
+        messages.warning('Usúario deletado')
         return redirect("agenda:index")
+    
     return render(request, 
                   'agenda/contact.html',
                   {'contact':contact,

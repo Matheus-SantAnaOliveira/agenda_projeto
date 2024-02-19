@@ -1,5 +1,7 @@
 from agenda.models import Contact
 from django.core.exceptions import ValidationError
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django import forms
 class ContactForm(forms.ModelForm):
     picture = forms.ImageField(
@@ -64,3 +66,31 @@ class ContactForm(forms.ModelForm):
                             ValidationError('Não digite DEF neste campo', 
                                             code='invalid'))
         return cleaned_data
+
+class RegisterForm(UserCreationForm):
+    first_name = forms.CharField(
+        required=True,
+        min_length=3,
+    )
+    last_name = forms.CharField(
+        required=True,
+        min_length=3,
+    )
+    email = forms.CharField(
+        required=True,
+        min_length=3,
+    )
+    class Meta:
+        model = User
+        fields =(
+            'first_name', 'last_name', 'email',
+            'username', 'password1', 'password2',
+        )
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        
+        if User.objects.filter(email=email).exists():
+            self.add_error(
+                'email', ValidationError('Ja existe este e-mail', code = 'invalid')
+            )
+        return email
